@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevTools – Modern Service Manager for Windows</title>
+    <style>
+        :root {
+            --bg-primary: #1a1b1e;
+            --bg-secondary: #25262b;
+            --text-primary: #ffffff;
+            --text-secondary: #a6a7ab;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: var(--bg-secondary);
+            padding: 2rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 0;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        .button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background-color: var(--accent);
+            color: white;
+        }
+        .button:hover {
+            background-color: var(--accent-hover);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+        .feature {
+            background-color: var(--bg-secondary);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        .feature h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        footer {
+            background-color: var(--bg-secondary);
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>DevTools</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <h1>Simplify Your Development Workflow</h1>
+                <p class="subtitle">Manage MongoDB and Nginx with an intuitive GUI. Streamline your development process on Windows systems.</p>
+                <a href="#" id="download-button" class="button">Download for Windows</a>
+            </section>
+
+            <section class="features">
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Easy Service Management</h3>
+                    <p>Start, stop, and restart your services with just a click.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Monitoring</h3>
+                    <p>Keep track of your service statuses in real-time.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📁</div>
+                    <h3>Quick Access</h3>
+                    <p>Easily access service logs and configuration files.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🌙</div>
+                    <h3>Dark Mode</h3>
+                    <p>Enjoy a sleek, modern interface that's easy on the eyes.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Made with ❤️ by <a href="https://delg.dev" target="_blank" rel="noopener noreferrer">delgdev</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const githubApiUrl = "https://api.github.com/repos/diegolara31/remote-manager-releases/releases/latest";
+
+        async function fetchLatestRelease() {
+            try {
+                const response = await fetch(githubApiUrl);
+                const releaseData = await response.json();
+
+                const exeAsset = releaseData.assets.find(asset => asset.name.endsWith('.exe'));
+
+                if (exeAsset) {
+                    const downloadButton = document.getElementById('download-button');
+                    downloadButton.href = exeAsset.browser_download_url;
+                } else {
+                    console.error("No .exe file found in the latest release.");
+                }
+            } catch (error) {
+                console.error("Error fetching latest release:", error);
+            }
+        }
+
+        fetchLatestRelease();
+    </script>
+</body>
+</html>
+
