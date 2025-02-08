@@ -5,3 +5,5 @@
 /.venv/mongodb
 /.venv/output
 /.venv/Scripts
+/.venv/nginx
+/compiler
