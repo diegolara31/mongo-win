@@ -1,1 +1,7 @@
 /output
+/legacy/out
+/.venv/apache
+/.venv/Lib
+/.venv/mongodb
+/.venv/output
+/.venv/Scripts
