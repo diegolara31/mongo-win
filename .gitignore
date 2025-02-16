@@ -6,4 +6,6 @@
 /.venv/output
 /.venv/Scripts
 /.venv/nginx
+/.venv/include
+
 /compiler

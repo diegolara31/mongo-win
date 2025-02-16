@@ -11,6 +11,7 @@ import psutil
 from tkinter.font import Font
 import json
 
+
 class ServiceManager:
     def __init__(self):
         self.root = tk.Tk()
@@ -18,12 +19,11 @@ class ServiceManager:
         self.root.geometry("1000x700")
 
         # --- Set Icon ---
-        # Use a .ico file for best compatibility (Windows)
         icon_path = "favicon.ico"  # Replace with your icon file's path
 
         if os.path.exists(icon_path):  # Check if the icon file exists
             if platform.system() == 'Windows':
-                self.root.iconbitmap(icon_path) # For taskbar and title bar
+                self.root.iconbitmap(icon_path)  # For taskbar and title bar
             else:
                 # For other platforms (e.g., Linux, macOS)
                 try:
@@ -53,9 +53,9 @@ class ServiceManager:
             'running': '#22c55e',
             'stopped': '#ef4444',
             'stop_btn': '#ef4444',
-            'restart_btn' : '#eab308',
-            'files_btn' : '#3b82f6',
-            'logs_btn' : '#22c55e'
+            'restart_btn': '#eab308',
+            'files_btn': '#3b82f6',
+            'logs_btn': '#22c55e'
         }
 
         # Initialize variables
@@ -87,6 +87,18 @@ class ServiceManager:
         self.setup_styles()
 
         self.setup_ui()
+        self.check_nginx_temp_folder()  # Check for 'temp' folder at startup
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)  # Bind closing event
+
+    def check_nginx_temp_folder(self):
+        """Checks for and creates the 'temp' folder within the Nginx directory."""
+        nginx_temp_path = os.path.join("nginx", "temp")
+        if not os.path.exists(nginx_temp_path):
+            try:
+                os.makedirs(nginx_temp_path)
+                self.add_status_message("Created 'temp' folder for Nginx.")
+            except OSError as e:
+                self.add_status_message(f"Error creating 'temp' folder: {e}")
 
     def setup_ui(self):
         # Main container
@@ -173,7 +185,6 @@ class ServiceManager:
             borderwidth=0
         )
         self.style.map('Stop.TButton', background=[('active', self.colors['error'])])
-
 
         self.style.configure(
             'Restart.TButton',
@@ -420,7 +431,7 @@ class ServiceManager:
                     if service_name == "MongoDB":
                         self.verify_mongodb_startup(service_name)
                     elif service_name == "Nginx":
-                         self.verify_nginx_startup(service_name)
+                        self.verify_nginx_startup(service_name)
 
                 elif command_type == 'stop':
                     time.sleep(0.5)
@@ -463,7 +474,7 @@ class ServiceManager:
                         pass
                     except psutil.AccessDenied:
                         self.add_status_message(f"Access denied while stopping {service_name}")
-                        self.update_status(service_name,"red", "Access Denied")
+                        self.update_status(service_name, "red", "Access Denied")
                         return
                     except Exception as e:
                         self.add_status_message(f"Error killing {service_name} process: {e}")
@@ -554,9 +565,9 @@ class ServiceManager:
         )
         text_area.pack(expand=True, fill='both', padx=15, pady=(0, 15))
         y_scrollbar = ttk.Scrollbar(text_area, orient='vertical', command=text_area.yview)
-        y_scrollbar.pack(side=tk.RIGHT, fill= tk.Y)
+        y_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         x_scrollbar = ttk.Scrollbar(text_area, orient='horizontal', command=text_area.xview)
-        x_scrollbar.pack(side=tk.BOTTOM, fill= tk.X)
+        x_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
         text_area.configure(yscrollcommand=y_scrollbar.set, xscrollcommand=x_scrollbar.set)
         self.refresh_logs(text_area, service_name)
 
@@ -580,11 +591,22 @@ class ServiceManager:
 
     def cleanup(self):
         self.add_status_message("Cleaning up and shutting down...")
-        self.stop_all()
-        self.root.after(2000, self.root.destroy)
+        self.stop_all()  # Stop all services before closing
+        self.root.after(2000, self.root.destroy)  # Wait for services to stop, then close.
+
+    def on_closing(self):
+        """Handles the window closing event."""
+        if self.running_services:
+            self.add_status_message("Stopping services before closing...")
+            self.stop_all()  # Stop all running services
+            # Use a delayed call to allow services time to stop before destroying the window.
+            self.root.after(2000, self.root.destroy)
+        else:
+            self.root.destroy()
 
     def run(self):
         self.root.mainloop()
+
 
 if __name__ == "__main__":
     app = ServiceManager()
